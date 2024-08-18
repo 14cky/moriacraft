@@ -1,0 +1,171 @@
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>MØRIA</title>
+    <style>
+      body {
+        margin: 0;
+        padding: 0;
+        font-family: Arial, sans-serif;
+        min-height: 100vh;
+        display: flex;
+        justify-content: space-between;
+        align-items: flex-start;
+        overflow: hidden;
+        background-color: #2020a0;
+        position: relative;
+    }
+    
+    header {
+        width: 100%;
+        position: relative;
+        z-index: 2;
+    }
+    
+    .logo-container {
+        position: absolute;
+        top: 10%;
+        left: 5%;
+    }
+    
+    .logo {
+        font-size: 8vw;
+        font-weight: bold;
+        color: white;
+        text-shadow: 2px 2px 5px rgba(0, 0, 0, 0.5);
+        display: flex;
+        gap: 0.5rem;
+        animation: fadeInUp 2s ease-out;
+    }
+    
+    .language-selection {
+        position: absolute;
+        bottom: 10%;
+        right: 5%;
+        z-index: 2;
+    }
+    
+    .bottom-sphere {
+        position: relative;
+        width: 30vw;
+        height: 30vw;
+        background-color: white;
+        border-radius: 50%;
+        display: flex;
+        flex-direction: column;
+        justify-content: center;
+        align-items: center;
+        gap: 10px;
+        padding: 20px;
+        box-shadow: 0 0 20px rgba(0, 0, 0, 0.2);
+        animation: fadeInUp 2s ease-out 1s;
+    }
+    
+    .lang-btn {
+        background-color: #333;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 25px;
+        font-size: 1.2vw;
+        cursor: pointer;
+        transition: transform 0.3s ease, opacity 0.3s ease;
+    }
+    
+    .lang-btn:hover {
+        transform: scale(1.1);
+        opacity: 0.8;
+    }
+    
+    .background-curve {
+        position: absolute;
+        bottom: 0;
+        left: 0;
+        width: 100%;
+        height: 100%;
+        background-color: white;
+        clip-path: ellipse(200% 100% at 50% 100%);
+        z-index: 1;
+    }
+    
+    @keyframes fadeInUp {
+        from {
+            opacity: 0;
+            transform: translateY(20px);
+        }
+        to {
+            opacity: 1;
+            transform: translateY(0);
+        }
+    }
+    
+    @media (max-width: 768px) {
+        .logo {
+            font-size: 12vw;
+        }
+        
+        .lang-btn {
+            font-size: 3.5vw;
+            padding: 8px 16px;
+        }
+    
+        .bottom-sphere {
+            width: 50vw;
+            height: 50vw;
+        }
+    
+        .background-curve {
+            clip-path: ellipse(220% 100% at 50% 100%);
+        }
+        .logo-part img {
+                width: 1em; /* Adjusts with the font size on smaller screens */
+                height: 1em;
+            }
+    }
+    
+    form {
+      display:flex;
+      flex-direction:column;
+      gap:5px;
+    }
+
+    .logo-part img {
+            width: 1em; /* Set the width relative to the current font size */
+            height: 1em; /* Maintain the aspect ratio by matching the height */
+            display: inline-block;
+            vertical-align: middle; /* Align the image vertically with text */
+        }
+  </style>
+</head>
+<body>
+    <header aria-label="Site Header">
+        <div class="logo-container">
+            <h1 class="logo">
+                <span class="logo-part">M</span>
+                <span class="logo-part"><image src='{% static "icon.png" %}'></span>
+                <span class="logo-part">R</span>
+                <span class="logo-part">I</span>
+                <span class="logo-part">A</span>
+            </h1>
+        </div>
+    </header>
+    
+    <aside aria-label="Language Selection" class="language-selection">
+        <div class="bottom-sphere">
+          <form method="post" action="">
+          {% csrf_token %} 
+            <button name="language" value="kz" type="submit" class="lang-btn">Қаз</button>
+            <button name="language" value="ru" type="submit" class="lang-btn">Рус</button>
+            <button name="language" value="en" type="submit" class="lang-btn">Eng</button>
+          </form>
+        </div>
+    </aside>
+</body>
+</html>
+
+{% endblock %}

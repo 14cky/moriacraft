@@ -1,0 +1,200 @@
+{% load static %}
+{% load i18n%}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "Lessons" %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #d6c8f4;
+            margin: 0;
+            padding: 0;
+        }
+
+        header {
+            background-color: #fff;
+            padding: 10px 20px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+        }
+
+        .nav-icons img {
+            width: 24px;
+            height: 24px;
+            margin: 0 10px;
+        }
+
+        .lessons-title {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+        }
+
+        .search-bar {
+            margin: 20px;
+            display: flex;
+            justify-content: center;
+            position: relative;
+        }
+
+        .search-bar input {
+            width: 100%;
+            max-width: 500px;
+            padding: 10px 40px 10px 20px;
+            border-radius: 20px;
+            border: 1px solid #ccc;
+            outline: none;
+        }
+
+        .search-bar img {
+            position: absolute;
+            right: 30px;
+            top: 50%;
+            transform: translateY(-50%);
+            width: 24px;
+            height: 24px;
+        }
+
+        .filter-tags {
+            display: flex;
+            justify-content: center;
+            gap: 10px;
+            margin: 20px;
+            flex-wrap: wrap;
+        }
+
+        .filter-tags button {
+            background-color: #3a3a3a;
+            color: #fff;
+            border: none;
+            border-radius: 20px;
+            padding: 10px 20px;
+            cursor: pointer;
+        }
+
+        .video-cards {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 20px;
+            margin: 20px;
+        }
+
+        .video-card {
+            background-color: #fff;
+            border-radius: 20px;
+            box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+            overflow: hidden;
+            max-width: 400px;
+            width: 100%;
+        }
+
+        .video-card img {
+            width: 100%;
+            height: auto;
+            border-bottom: 1px solid #ccc;
+        }
+
+        .video-card .info {
+            padding: 20px;
+        }
+
+        .video-card .info h3 {
+            margin: 10px 0;
+            font-size: 18px;
+            color: #000;
+        }
+
+        .video-card .info .author {
+            display: flex;
+            align-items: center;
+            margin-top: 10px;
+        }
+
+        .video-card .info .author img {
+            border-radius: 50%;
+            width: 30px;
+            height: 30px;
+            margin-right: 10px;
+        }
+
+        .video-card .info .author span {
+            font-size: 14px;
+            color: #666;
+        }
+
+        @media (max-width: 768px) {
+            .video-cards {
+                flex-direction: column;
+                align-items: center;
+            }
+
+            .nav-icons img {
+                width: 20px;
+                height: 20px;
+            }
+
+            .search-bar input {
+                max-width: 300px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <header>
+        <div class="nav-icons">
+            <a href="{% url "dashboard" %}"><img src="{% static "home.png" %}" alt="Home Icon"></a>
+            <a href=""><img src="{% static "activity.png" %}" alt="Stats Icon"></a>
+            <a href="{% url "profile" %}"><img src="{% static "profile.png" %}" alt="User Icon"></a>
+            <a href=""><img src="{% static "bell.png" %}" alt="Notifications Icon"></a>
+        </div>
+        <div class="lessons-title">{% trans "Lessons" %}</div>
+    </header>
+
+    <div class="search-bar">
+        <input type="text" placeholder="{% trans "Search..." %}">
+        <img src="{% static "search.png" %}" alt="Search Icon">
+    </div>
+
+    <div class="filter-tags">
+        <button>dr.Berg</button>
+        <button>Fuse school</button>
+        <button>Genetic</button>
+        <button>health</button>
+    </div>
+
+    <div class="video-cards">
+        <div class="video-card">
+            <a href="https://www.youtube.com/watch?v=1TP5glJs7cw"><img src="{% static "video1.png" %}" alt="Autoimmune Video"></a>
+            <div class="info">
+                <h3>Autoimmune diseases: 7 reasons you didn't know about👐</h3>
+                <div class="author">
+                    <img src="{% static "yticon2.png" %}" alt="Doctor Berg">
+                    <span>Doctor Berg</span>
+                </div>
+            </div>
+        </div>
+        
+        <div class="video-card">
+            <a href="https://youtu.be/UC-YwiB_FFg?si=NO7akaWMLIfjaFHT"><img src="{% static "video2.png" %}" alt="Genetic Disorders Video"></a>
+            <div class="info">
+                <h3>Inherited Genetic Disorders | Genetics | Biology | FuseSchool</h3>
+                <div class="author">
+                    <img src="{% static "yticon1.png" %}" alt="Fuse School">
+                    <span>FuseSchool - Global Education</span>
+                </div>
+            </div>
+        </div>
+    </div>
+
+</body>
+</html>
+{% endblock %}

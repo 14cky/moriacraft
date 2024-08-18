@@ -1,0 +1,361 @@
+{% load static %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Doodle Jump Quiz Game</title>
+    <style>
+        body {
+        margin: 0;
+        overflow: hidden;
+        background-color: #87ceeb;
+    }
+    
+    .game {
+        position: relative;
+        width: 400px;
+        height: 600px;
+        margin: 0 auto;
+        background-color: #f0f8ff;
+        border: 2px solid #000;
+    }
+    
+    .doodler {
+        position: absolute;
+        width: 60px;
+        height: 60px;
+        background-color: #ffcc00;
+        border-radius: 10px;
+        background-size: cover;
+    }
+    
+    .quiz-popup {
+        position: fixed;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        background-color: #fff;
+        padding: 20px;
+        border: 2px solid #000;
+        box-shadow: 0 5px 15px rgba(0, 0, 0, 0.3);
+        z-index: 1000;
+        display: none; /* Hidden by default */
+    }
+    .platform {
+        position: absolute;
+        width: 85px;
+        height: 15px;
+        background-color: #008000;
+        border-radius: 5px;
+    }
+    
+</style>
+</head>
+<body>
+    <div class="game">
+    </div>
+    
+    <div class="quiz-popup" id="quizPopup">
+        <h2 id="question"></h2>
+        <div id="answers"></div>
+        <button id="submitBtn">Submit Answer</button>
+    </div>
+
+    
+    <script>
+    document.addEventListener('DOMContentLoaded', () => {
+      const game = document.querySelector('.game')
+      const doodler = document.createElement('div')
+      let doodlerLeftSpace = 50
+      let startPoint = 150
+      let doodlerBottomSpace = startPoint
+      let isGameOver = false
+      let platformCount = 5
+      let platforms = []
+      let upTimerId
+      let downTimerId
+      let isJumping = false
+      let isGoingLeft = false
+      let isGoingRight = false
+      let leftTimerId
+      let rightTimerId
+      let jumpCount = 0
+      let isMovingLeft = false;
+      let isMovingRight = false;
+      let movePlatformsId;
+  
+      const quizPopup = document.getElementById('quizPopup')
+      const questionElement = document.getElementById('question')
+      const answersElement = document.getElementById('answers')
+      const questions = [
+          {
+              question: "What is the best way to clean your hands?",
+              answers: ["Soap and water", "Just water", "Hand sanitizer", "Wiping on clothes"],
+              correct: 0
+          },
+          {
+              question: "How often should you brush your teeth?",
+              answers: ["Once a week", "Twice a day", "Once a month", "Whenever you feel like it"],
+              correct: 1
+          },
+          {
+              question: "How long should you wash your hands?",
+              answers: ["5 seconds", "10 seconds", "20 seconds", "1 minute"],
+              correct: 2
+          },
+          {
+              question: "Which of the following is important for personal hygiene?",
+              answers: ["Washing hands", "Brushing teeth", "Bathing regularly", "All of the above"],
+              correct: 3
+          },
+          {
+              question: "How often should you change your toothbrush?",
+              answers: ["Once a year", "Every 3-4 months", "Only when it wears out", "Never"],
+              correct: 1
+          }
+      ]
+      let currentQuestionIndex = 0
+  
+      function showQuiz() {
+          if (currentQuestionIndex >= questions.length) {
+              quizPopup.style.display = 'none';
+              allowFinalJumps();
+              return
+          }
+  
+          const currentQuestion = questions[currentQuestionIndex]
+          questionElement.textContent = currentQuestion.question
+          answersElement.innerHTML = ''
+          currentQuestion.answers.forEach((answer, index) => {
+              const answerElement = document.createElement('input')
+              answerElement.type = 'radio'
+              answerElement.name = 'answer'
+              answerElement.value = index
+              answersElement.appendChild(answerElement)
+              answersElement.innerHTML += answer + '<br>'
+          })
+  
+          quizPopup.style.display = 'block'
+      }
+  
+      function submitAnswer() {
+        const selectedAnswer = document.querySelector('input[name="answer"]:checked');
+        if (!selectedAnswer) {
+            alert('Please select an answer!');
+            return;
+        }
+    
+        if (parseInt(selectedAnswer.value) === questions[currentQuestionIndex].correct) {
+            jumpCount = 0;
+            currentQuestionIndex++;
+            quizPopup.style.display = 'none';
+    
+            // Restart platform movement after answering the quiz
+            movePlatformsId = setInterval(movePlatforms, 30);
+    
+            if (currentQuestionIndex >= questions.length) {
+                allowFinalJumps();  // Resume jumping after the last question
+            } else {
+                jump();  // Resume jumping for the next set of 10 jumps
+            }
+        } else {
+            quizPopup.style.display = 'none';
+            alert('Incorrect answer! Game over.');
+            gameOver();
+        }
+    }
+    
+    
+
+    // Attach event listener to the button
+    document.getElementById('submitBtn').addEventListener('click', submitAnswer);
+  
+      class Platform {
+          constructor(newPlatformBottom) {
+              this.bottom = newPlatformBottom
+              this.left = Math.random() * 315
+              this.visual = document.createElement('div')
+  
+              const visual = this.visual
+              visual.classList.add('platform')
+              visual.style.left = this.left + 'px'
+              visual.style.bottom = this.bottom + 'px'
+              game.appendChild(visual)
+          }
+      }
+  
+      function createPlatforms() {
+          for (let i = 0; i < platformCount; i++) {
+              let platformGap = 600 / platformCount
+              let newPlatformBottom = 100 + i * platformGap
+              let newPlatform = new Platform(newPlatformBottom)
+              platforms.push(newPlatform)
+          }
+      }
+  
+      function movePlatforms() {
+          if (doodlerBottomSpace > 200) {
+              platforms.forEach(platform => {
+                  platform.bottom -= 4
+                  let visual = platform.visual
+                  visual.style.bottom = platform.bottom + 'px'
+  
+                  if (platform.bottom < 10) {
+                      let firstPlatform = platforms[0].visual
+                      firstPlatform.classList.remove('platform')
+                      platforms.shift()
+                      let newPlatform = new Platform(600)
+                      platforms.push(newPlatform)
+                  }
+              })
+          }
+      }
+  
+      function createDoodler() {
+          game.appendChild(doodler)
+          doodler.classList.add('doodler')
+          doodlerLeftSpace = platforms[0].left
+          doodler.style.left = doodlerLeftSpace + 'px'
+          doodler.style.bottom = doodlerBottomSpace + 'px'
+      }
+  
+      function fall() {
+        isJumping = false;
+        clearInterval(upTimerId);
+        downTimerId = setInterval(() => {
+            doodlerBottomSpace -= 5;
+            doodler.style.bottom = doodlerBottomSpace + 'px';
+            if (doodlerBottomSpace <= 0) {
+                gameOver();
+            }
+            platforms.forEach(platform => {
+                if (
+                    (doodlerBottomSpace >= platform.bottom) &&
+                    (doodlerBottomSpace <= platform.bottom + 15) &&
+                    ((doodlerLeftSpace + 60) >= platform.left) &&
+                    (doodlerLeftSpace <= (platform.left + 85)) &&
+                    !isJumping
+                ) {
+                    startPoint = doodlerBottomSpace;
+                    jumpCount++;
+                    if (jumpCount >= 10) {
+                        clearInterval(downTimerId);  // Stop doodler's downward movement
+                        clearInterval(movePlatformsId);  // Stop platform movement
+                        showQuiz();  // Display the quiz after the 10th jump
+                    } else {
+                        jump();  // Continue jumping if under 10 jumps
+                    }
+                }
+            });
+        }, 30);
+    }
+    
+  
+    function jump() {
+        clearInterval(downTimerId);
+        isJumping = true;
+        upTimerId = setInterval(() => {
+            doodlerBottomSpace += 20;
+            doodler.style.bottom = doodlerBottomSpace + 'px';
+            if (doodlerBottomSpace >= startPoint + 200) {  // Limit the height of the jump
+                fall();
+            }
+        }, 30);
+    }
+  
+      function allowFinalJumps() {
+          jumpCount = 0;
+          jump(); // Restart jumping for the final 10 jumps
+      }
+  
+
+function moveLeft() {
+    if (isMovingRight) {
+        clearInterval(rightTimerId);
+        isMovingRight = false;
+    }
+    if (!isMovingLeft) {  // Prevent multiple intervals
+        isMovingLeft = true;
+        leftTimerId = setInterval(() => {
+            if (doodlerLeftSpace > 0) {
+                doodlerLeftSpace -= 5;
+                doodler.style.left = doodlerLeftSpace + 'px';
+            } else {
+                moveStraight();  // Stop when hitting the left boundary
+            }
+        }, 20);
+    }
+}
+
+function moveRight() {
+    if (isMovingLeft) {
+        clearInterval(leftTimerId);
+        isMovingLeft = false;
+    }
+    if (!isMovingRight) {  // Prevent multiple intervals
+        isMovingRight = true;
+        rightTimerId = setInterval(() => {
+            if (doodlerLeftSpace < 340) {
+                doodlerLeftSpace += 5;
+                doodler.style.left = doodlerLeftSpace + 'px';
+            } else {
+                moveStraight();  // Stop when hitting the right boundary
+            }
+        }, 20);
+    }
+}
+
+function moveStraight() {
+    clearInterval(leftTimerId);
+    clearInterval(rightTimerId);
+    isMovingLeft = false;
+    isMovingRight = false;
+}
+
+    
+    
+    
+  
+    function control(e) {
+        if (e.key === 'ArrowLeft') {
+            moveLeft();
+        } else if (e.key === 'ArrowRight') {
+            moveRight();
+        } else if (e.key === 'ArrowUp') {
+            moveStraight();  // Stop horizontal movement if up arrow is pressed
+        }
+    }
+    
+  
+      function gameOver() {
+          isGameOver = true
+          while (game.firstChild) {
+              game.removeChild(game.firstChild)
+          }
+          game.innerHTML = 'Game Over'
+          clearInterval(upTimerId)
+          clearInterval(downTimerId)
+          clearInterval(leftTimerId)
+          clearInterval(rightTimerId)
+      }
+  
+      function start() {
+        if (!isGameOver) {
+            createPlatforms();
+            createDoodler();
+            movePlatformsId = setInterval(movePlatforms, 30);  // Initialize the interval
+            document.addEventListener('keydown', control);
+            showQuiz();
+        }
+    }
+    
+      start()
+  })
+  </script>
+</body>
+</html>
+
+{% endblock %}
