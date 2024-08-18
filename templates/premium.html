@@ -1,0 +1,221 @@
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "Premium Moria" %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            background: linear-gradient(to bottom, #2c3e50, #2980b9);
+            color: #fff;
+        }
+        
+        header {
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            padding: 20px;
+            background-color: transparent;
+            position: relative;
+        }
+        
+        .back-icon {
+            position: absolute;
+            left: 20px;
+            cursor: pointer;
+        }
+
+        .back-icon img {
+            width:50%;
+        }
+        
+        h1 {
+            font-size: 2em;
+            font-weight: normal;
+        }
+        
+        .highlight {
+            font-weight: bold;
+            color: #f1c40f;
+        }
+        
+        main {
+            display: flex;
+            justify-content: center;
+            padding: 20px;
+        }
+        
+        .pricing-cards {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(250px, 1fr));
+            gap: 20px;
+            max-width: 1200px;
+            width: 100%;
+        }
+        
+        .card {
+            background-color: #fff;
+            color: #000;
+            border-radius: 10px;
+            padding: 20px;
+            box-shadow: 0 5px 15px rgba(0, 0, 0, 0.1);
+            text-align: center;
+        }
+        
+        .free-tag {
+            background-color: #3498db;
+            color: #fff;
+            padding: 5px 10px;
+            border-radius: 5px;
+            font-size: 0.8em;
+            margin-bottom: 15px;
+            display: inline-block;
+        }
+        
+        .card h2 {
+            font-size: 1.5em;
+            margin-bottom: 10px;
+        }
+        
+        .card p {
+            font-size: 1em;
+            margin: 10px 0;
+        }
+        
+        .card hr {
+            margin: 20px 0;
+            border: 0;
+            border-top: 1px solid #ddd;
+        }
+        
+        .card ul {
+            list-style: none;
+            padding: 0;
+        }
+        
+        .card ul li {
+            margin: 10px 0;
+        }
+        
+        .cta-button {
+            background-color: #000;
+            color: #fff;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 25px;
+            cursor: pointer;
+            margin: 20px 0;
+            font-size: 1em;
+            transition: background-color 0.3s ease;
+        }
+        
+        .cta-button:hover {
+            background-color: #333;
+        }
+        
+        .terms {
+            font-size: 0.8em;
+            color: #888;
+        }
+        
+        @media (max-width: 768px) {
+            header {
+                flex-direction: column;
+                align-items: flex-start;
+                padding: 10px;
+            }
+        
+            h1 {
+                font-size: 1.5em;
+                position: relative;
+                left:35%;
+            }
+        
+            .back-icon {
+                left: 10px;
+            }
+        }
+        
+        @media (max-width: 576px) {
+            .cta-button {
+                width: 100%;
+                font-size: 0.9em;
+            }
+        }
+        
+    </style>
+</head>
+<body>
+    <header>
+        <div class="back-icon">
+            <a href="{% url "dashboard" %}"><img src="{% static 'back.png' %}" alt="Back" aria-label="Back"></a>
+        </div>
+        <h1><span class="highlight">{% trans "Premium" %}</span> Moria</h1>
+    </header>
+
+    <main>
+        <section class="pricing-cards">
+            <article class="card">
+                <div class="free-tag">{% trans "1 week free" %}</div>
+                <h2>{% trans "Individual" %}</h2>
+                <p>{% trans "24 990 tg/month after offer period 1 account" %}</p>
+                <hr>
+                <ul>
+                    <li>{% trans "✔️ Personal chat with an experienced doctor and personalized health tracking" %}</li>
+                    <li>{% trans "✔️ Unlimited access to all video lessons" %}</li>
+                </ul>
+                <button class="cta-button">{% trans "get started" %}</button>
+                <p class="terms">{% trans "Terms and conditions apply. 1 month free not available for users who have already tried Premium." %}</p>
+            </article>
+
+            <article class="card">
+                <div class="free-tag">{% trans "1 week free" %}</div>
+                <h2>{% trans "Duo" %}</h2>
+                <p>{% trans "19 990 tg/month after offer period 2 account" %}</p>
+                <hr>
+                <ul>
+                    <li>{% trans "✔️ Personal chat with an experienced doctor and health tracking" %}</li>
+                    <li>{% trans "✔️ Unlimited access to all video lessons" %}</li>
+                </ul>
+                <button class="cta-button">{% trans "get started" %}</button>
+                <p class="terms">{% trans "Terms and conditions apply. 1 month free not available for users who have already tried Premium." %}</p>
+            </article>
+
+            <article class="card">
+                <div class="free-tag">{% trans "1 week free" %}</div>
+                <h2>{% trans "Family" %}</h2>
+                <p>{% trans "29 990 tg/month after offer period up to 6 account" %}</p>
+                <hr>
+                <ul>
+                    <li>{% trans "✔️ Personal chat with an experienced doctor and health tracking" %}</li>
+                    <li>{% trans "✔️ Unlimited access to all video lessons" %}</li>
+                </ul>
+                <button class="cta-button">{% trans "get started" %}</button>
+                <p class="terms">{% trans "Terms and conditions apply. 1 month free not available for users who have already tried Premium." %}</p>
+            </article>
+
+            <article class="card">
+                <div class="free-tag">{% trans "1 week free" %}</div>
+                <h2>{% trans "Student" %}</h2>
+                <p>{% trans "18 990/month after offer period 1 account" %}</p>
+                <hr>
+                <ul>
+                    <li>{% trans "✔️ Personal chat with an experienced doctor and health tracking" %}</li>
+                    <li>{% trans "✔️ Unlimited access to all video lessons" %}</li>
+                </ul>
+                <button class="cta-button">{% trans "get started" %}</button>
+                <p class="terms">{% trans "Terms and conditions apply. 1 month free not available for users who have already tried Premium." %}</p>
+            </article>
+        </section>
+    </main>
+</body>
+</html>
+
+{% endblock content %}

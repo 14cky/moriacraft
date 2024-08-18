@@ -1,0 +1,172 @@
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Medinator</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+        
+        header {
+            text-align: center;
+            padding: 20px;
+        }
+        
+        main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            padding: 20px;
+            position: relative;
+        }
+        
+        h2 {
+            color: #4B3F72;
+            text-align: center;
+            margin-bottom: 20px;
+        }
+        
+        .button-container {
+            display: flex;
+            flex-wrap: wrap;
+            justify-content: center;
+            gap: 15px;
+        }
+        
+        .answer-button {
+            background-color: #444;
+            color: white;
+            padding: 10px 20px;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+            flex: 1 1 calc(50% - 30px);
+            max-width: 200px;
+        }
+        
+        .answer-button:hover {
+            background-color: #333;
+        }
+        
+        #question {
+            margin-bottom: 20px;
+            padding: 0 10px;
+        }
+        
+        .logo {
+            width: 50px;
+            position: absolute;
+            bottom: 20px;
+            right: 20px;
+        }
+
+        footer {
+            position:absolute;
+            width: 100px;
+            height: 100px;
+            background-color: #6c63ff;
+            border-radius: 50%;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+            z-index: 1000; /* Ensure the logo stays on top of other elements */
+        }
+
+        @media screen and (max-width: 768px) {
+            .answer-button {
+                flex: 1 1 calc(100% - 30px);
+            }
+        }
+        
+    </style>
+</head>
+
+<body>
+    <header>
+        <h1>Medinator</h1>
+    </header>
+
+    <main>
+        <section aria-label="question-section">
+            <h2 id="question">Do you have a headache?</h2>
+            <div class="button-container">
+                <button class="answer-button" onclick="nextQuestion(0)">Maybe no</button>
+                <button class="answer-button" onclick="nextQuestion(1)">Maybe yes</button>
+                <button class="answer-button" onclick="nextQuestion(2)">I don't know</button>
+                <button class="answer-button" onclick="nextQuestion(3)">Definitely yes</button>
+                <button class="answer-button" onclick="nextQuestion(4)">Definitely no</button>
+            </div>
+        </section>
+    </main>
+
+    <footer>
+        <img src="{% static "icon.png" %}" alt="Medinator Logo" class="logo">
+    </footer>
+
+    <script>
+        const questions = [
+        "Do you have a headache?",
+        "Do you experience chronic joint pain that does not go away over time?",
+        "Do you frequently have joint pain accompanied by a burning or tingling sensation?",
+        "Have you observed pathological changes on X-rays, such as bone growths or cartilage degradation?",
+        "Do you have discomfort or pain in your spine, especially in the lower back and sacral areas?",
+        "Have you noticed limitations in joint movement that make it difficult to perform routine tasks?",
+        "Do you experience symptoms such as muscle spasms or joint deformity?",
+        "Do you feel fatigued even after a full night's sleep?",
+        "Have you experienced sudden, unexplained weight loss or gain?",
+        "Do you have difficulty concentrating or remembering things?",
+        "Do you experience stiffness in your joints after periods of inactivity?",
+        "Do you have chronic joint pain that does not go away over time?",
+"Do you have a sore throat?",
+"Do you have a fever?",
+"Do you cough?",
+"Do you have pain when you swallow?",
+"Do you feel weak?"
+    ];
+    
+    let shuffledQuestions = [];
+    let currentQuestion = 0;
+    
+    // Function to shuffle the questions array
+    function shuffleQuestions() {
+        shuffledQuestions = [...questions];
+        for (let i = shuffledQuestions.length - 1; i > 0; i--) {
+            const j = Math.floor(Math.random() * (i + 1));
+            [shuffledQuestions[i], shuffledQuestions[j]] = [shuffledQuestions[j], shuffledQuestions[i]];
+        }
+    }
+    
+    // Function to load the next question
+    function nextQuestion(answerIndex) {
+        currentQuestion++;
+        if (currentQuestion < shuffledQuestions.length) {
+            document.getElementById("question").textContent = shuffledQuestions[currentQuestion];
+        } else {
+            document.getElementById("question").textContent = "Osteochondropathy";
+            document.querySelector('.button-container').style.display = 'none';
+        }
+    }
+    
+    // Initialize the quiz
+    shuffleQuestions();
+    document.getElementById("question").textContent = shuffledQuestions[currentQuestion];
+    
+    </script>
+</body>
+
+</html>
+
+{% endblock content %}

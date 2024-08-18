@@ -1,0 +1,149 @@
+{% load static %}
+{% load i18n %}
+
+{% block content %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>{% trans "My Account" %}</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f0f0f0;
+            margin: 0;
+            padding: 0;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            height: 100vh;
+        }
+
+        .container {
+            display: flex;
+            width: 100%;
+            max-width: 1200px;
+            background-color: #fff;
+            border-radius: 10px;
+            overflow: hidden;
+            box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .sidebar {
+            background-color: #f9f9f9;
+            width: 30%;
+            padding: 20px;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+        }
+
+        .sidebar img {
+            width: 100px;
+            height: 100px;
+            margin-bottom: 20px;
+        }
+
+        .sidebar h2 {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .sidebar nav {
+            margin-top: 20px;
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .sidebar nav img {
+            width: 40px;
+            height: 40px;
+            cursor: pointer;
+        }
+
+        .content {
+            width: 70%;
+            padding: 40px;
+        }
+
+        .content h1 {
+            font-size: 24px;
+            font-weight: bold;
+            color: #000;
+            margin-bottom: 30px;
+        }
+
+        .content form {
+            display: flex;
+            flex-direction: column;
+            gap: 20px;
+        }
+
+        .content form label {
+            font-size: 16px;
+            color: #333;
+        }
+
+        .content form input {
+            padding: 10px;
+            font-size: 16px;
+            border-radius: 5px;
+            border: 1px solid #ccc;
+            background-color: #e0d7f9;
+        }
+
+        @media (max-width: 768px) {
+            .container {
+                flex-direction: column;
+            }
+
+            .sidebar {
+                width: 100%;
+                padding: 20px 0;
+            }
+
+            .content {
+                width: 100%;
+                padding: 20px;
+            }
+        }
+    </style>
+</head>
+<body>
+
+    <div class="container">
+        <!-- Sidebar -->
+        <div class="sidebar">
+            <img src="{{ user.profile.profile_picture.url }}" alt="{% trans 'Profile Picture' %}">
+            <h2>{{ user.username }}</h2>
+            <nav>
+                <a href="{% url 'dashboard' %}"><img src="{% static 'home.png' %}" alt="{% trans 'Home' %}"></a>
+                <a href="#"><img src="{% static 'activity.png' %}" alt="{% trans 'Stats' %}"></a>
+                <a href="{% url "profile" %}"><img src="{% static 'profile.png' %}" alt="{% trans 'Profile' %}"></a>
+                <a href="#"><img src="{% static 'bell.png' %}" alt="{% trans 'Notifications' %}"></a>
+            </nav>
+        </div>
+
+        <!-- Content -->
+        <div class="content">
+            <h1>{% trans 'My Account' %}</h1>
+            <form method="POST">
+                {% csrf_token %}
+                {{ form.as_p }}
+
+                <label for="registration">{% trans 'Date of registration' %}</label>
+                <input type="text" id="registration" name="registration" value="{{ user.profile.date_of_registration }}" readonly>
+
+                <button type="submit">{% trans 'Update Profile' %}</button>
+            </form>
+        </div>
+    </div>
+
+</body>
+</html>
+{% endblock %}
